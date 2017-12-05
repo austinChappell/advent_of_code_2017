@@ -49,101 +49,62 @@ function spiralAdd(num) {
 
     const spiral = [];
 
-    let x = 1;
+    let x = 0;
+    let y = 0;
+    let val = 1;
     let side = 1;
     let layer = 1;
     let edgeDist = 1;
     let position = 0;
-    let wholePosition = 0;
 
-    while (x <= num) {
+    while (val <= num) {
 
         position++;
-        wholePosition++;
         edgeDist = layer - 1;
 
         const o = {};
 
-        o.val = x;
-        o.side = side;
+        o.val = val;
         o.layer = layer;
-        o.edgeDist = edgeDist;
-        o.position = position;
-        // o.wholePosition = wholePosition;
+        o.x = x;
+        o.y = y;
 
+        if (side === 1 && layer !== 1) {
+            o.x = Math.floor(layer / 2);
+            o.y = position - edgeDist / 2;
+        } else if (side === 3) {
+            o.x = Math.floor(layer / 2) * -1;
+            o.y = ((position - edgeDist / 2) * -1);
+        }
 
+        if (side === 2) {
+            o.x = ((position - edgeDist / 2) * -1);
+            o.y = Math.floor(layer / 2);
+        } else if (side === 4) {
+            o.x = position - edgeDist / 2;
+            o.y = Math.floor(layer / 2) * -1;
+        }
 
-        const filtered = [];
-
-        spiral.forEach((item) => {
-            if (layer === 3 && item.layer === 1) {
-                filtered.push(item);
-            } else {
-                if (layer - 2 === item.layer) {
-                    if (side === item.side) {
-                        if (position === item.position) {
-                            filtered.push(item);
-                        } else if (position === item.positon - 1) {
-                            filtered.push(item);
-                        } else if (position === item.position + 1) {
-                            filtered.push(item);
-                        } else if (position === item.position + 2) {
-                            filtered.push(item);
-                        // } else if (position === item.position - 2) {
-                        //     filtered.push(item);
-                        }
-                        // TODO: This might need to change
-                    } else if (position === 2) {
-                        if (item.side === 4 && item.position === edgeDist - 2) {
-                            filtered.push(item);
-                        } else if (item.side === side - 1 && item.position === 1) {
-                            filtered.push(item);
-                        }
-                    } else {
-                        if (position === edgeDist && item.position === 1 && side === 4) {
-                            filtered.push(item);
-                        }
-                    }
-                } else if (layer === item.layer) {
-                    if (side === 4) {
-                        if (position === edgeDist - 1 || position === edgeDist) {
-                            if (item.side === 1 && item.position === 1) {
-                                filtered.push(item);
-                            }
-                        }
-                    }
-                    if (position === 1) {
-                        if (item.side === side - 1) {
-                            if (item.position === edgeDist - 1) {
-                                filtered.push(item);
-                            }
-                        }
-                    }
-                }
+        const filtered = spiral.filter((item) => {
+            if (Math.abs(item.x - o.x) <= 1 && Math.abs(item.y - o.y) <= 1) {
+                return item;
             }
         })
 
-        const lastItem = spiral[spiral.length - 1];
+        let reduced;
 
-        if (!filtered.includes(lastItem)) {
-            filtered.push(lastItem);
+        if (filtered.length > 0) {
+            reduced = filtered.reduce((a, b) => {
+                return {val: a.val + b.val};
+            }, {val: 0})
         }
 
-        const reduced = filtered.reduce((a, b) => {
-            return {val: a.val + b.val};
-        })
-
         if (typeof reduced !== 'undefined') {
-            o.val = reduced.val;
+            val = reduced.val;
+            o.val = val;
         };
 
-
-
-
-
         spiral.push(o);
-
-        console.log(spiral);
 
         const numOfLayer = spiral.filter((item) => {
             return item.layer === layer;
@@ -153,7 +114,6 @@ function spiralAdd(num) {
             layer += 2;
             side = 1;
             position= 0;
-            wholePosition = 0;
         } else {
             if (position === edgeDist) {
                 position = 0;
@@ -161,14 +121,10 @@ function spiralAdd(num) {
             }
         }
 
-
-
-        x++;
-
     }
 
-    // console.log(spiral);
+    return spiral;
 
 }
 
-spiralAdd(15);
+spiralAdd(265149);
