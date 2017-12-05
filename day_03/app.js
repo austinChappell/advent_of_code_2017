@@ -53,9 +53,15 @@ function spiralAdd(num) {
     let side = 1;
     let layer = 1;
     let edgeDist = 1;
-    let position = 1;
+    let position = 0;
+    let wholePosition = 0;
 
     while (x <= num) {
+
+        position++;
+        wholePosition++;
+        edgeDist = layer - 1;
+
         const o = {};
 
         o.val = x;
@@ -63,22 +69,106 @@ function spiralAdd(num) {
         o.layer = layer;
         o.edgeDist = edgeDist;
         o.position = position;
-        spiral.push(o);
+        // o.wholePosition = wholePosition;
 
-        const numOfLayer = spiral.map((item) => {
-            return item.layer;
+
+
+        const filtered = [];
+
+        spiral.forEach((item) => {
+            if (layer === 3 && item.layer === 1) {
+                filtered.push(item);
+            } else {
+                if (layer - 2 === item.layer) {
+                    if (side === item.side) {
+                        if (position === item.position) {
+                            filtered.push(item);
+                        } else if (position === item.positon - 1) {
+                            filtered.push(item);
+                        } else if (position === item.position + 1) {
+                            filtered.push(item);
+                        } else if (position === item.position + 2) {
+                            filtered.push(item);
+                        // } else if (position === item.position - 2) {
+                        //     filtered.push(item);
+                        }
+                        // TODO: This might need to change
+                    } else if (position === 2) {
+                        if (item.side === 4 && item.position === edgeDist - 2) {
+                            filtered.push(item);
+                        } else if (item.side === side - 1 && item.position === 1) {
+                            filtered.push(item);
+                        }
+                    } else {
+                        if (position === edgeDist && item.position === 1 && side === 4) {
+                            filtered.push(item);
+                        }
+                    }
+                } else if (layer === item.layer) {
+                    if (side === 4) {
+                        if (position === edgeDist - 1 || position === edgeDist) {
+                            if (item.side === 1 && item.position === 1) {
+                                filtered.push(item);
+                            }
+                        }
+                    }
+                    if (position === 1) {
+                        if (item.side === side - 1) {
+                            if (item.position === edgeDist - 1) {
+                                filtered.push(item);
+                            }
+                        }
+                    }
+                }
+            }
         })
 
-        if (numOfLayer >= (layer - 1) * 4) {
-            layer++;
+        const lastItem = spiral[spiral.length - 1];
+
+        if (!filtered.includes(lastItem)) {
+            filtered.push(lastItem);
         }
+
+        const reduced = filtered.reduce((a, b) => {
+            return {val: a.val + b.val};
+        })
+
+        if (typeof reduced !== 'undefined') {
+            o.val = reduced.val;
+        };
+
+
+
+
+
+        spiral.push(o);
+
+        console.log(spiral);
+
+        const numOfLayer = spiral.filter((item) => {
+            return item.layer === layer;
+        })
+
+        if (numOfLayer.length >= (layer - 1) * 4) {
+            layer += 2;
+            side = 1;
+            position= 0;
+            wholePosition = 0;
+        } else {
+            if (position === edgeDist) {
+                position = 0;
+                side++;
+            }
+        }
+
+
 
         x++;
 
     }
 
-    console.log(spiral);
+    // console.log(spiral);
 
 }
 
-spiralAdd(29);
+spiralAdd(15);
