@@ -44,3 +44,41 @@ function manhattanDist(num) {
 }
 
 manhattanDist(265149);
+
+function spiralAdd(num) {
+
+    const spiral = [];
+
+    let x = 1;
+    let side = 1;
+    let layer = 1;
+    let edgeDist = 1;
+    let position = 1;
+
+    while (x <= num) {
+        const o = {};
+
+        o.val = x;
+        o.side = side;
+        o.layer = layer;
+        o.edgeDist = edgeDist;
+        o.position = position;
+        spiral.push(o);
+
+        const numOfLayer = spiral.map((item) => {
+            return item.layer;
+        })
+
+        if (numOfLayer >= (layer - 1) * 4) {
+            layer++;
+        }
+
+        x++;
+
+    }
+
+    console.log(spiral);
+
+}
+
+spiralAdd(29);
