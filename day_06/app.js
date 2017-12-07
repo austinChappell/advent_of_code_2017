@@ -14,51 +14,56 @@ function findLargest(arr) {
     return largest;
 }
 
-function sortArr(arr, largest) {
+function sortArr(array, largest) {
+    const arr = array.slice();
     let index = arr.indexOf(largest) + 1;
     let initVal = largest;
+    arr[index - 1] = 0;
 
     for (let i = 0; i < initVal; i++) {
-        if (index > arr.length) {
+        if (index > arr.length - 1) {
             index = 0;
         }
-        arr[index] += 1;
+        arr[index] = arr[index] + 1
+        index++;
     }
 
     return arr;
 }
 
-function scanArrays(history, newArray) {
-
-    let match = true;
-    history.forEach((arr) => {
-        for (let i = 0; i < arr.length; i++) {
-            if (arr[i] !== newArray[i]) {
-                match = false;
-            }
-        }
-    })
-    return match;
-
-}
+let cycle = 0;
+const history = [];
 
 function distribMem(arr) {
 
-    const history = [];
+
     const largest = findLargest(arr);
     const newArr = sortArr(arr, largest);
-    let match = scanArrays(history, newArr);
+    cycle++;
+    let match = false;
 
-    console.log(newArr);
+    history.forEach((arr) => {
+        let matchCount = 0;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === newArr[i]) {
+                matchCount++;
+            }
+        }
+        if (matchCount === arr.length) {
+            match = true;
+        }
+    })
 
     if (!match) {
         history.push(newArr);
         distribMem(newArr);
     } else {
-        console.log(newArr);
+        console.log('cycle', cycle);
         return newArr;
     }
 
+
 }
 
-distribMem(testInput);
+// distribMem(testInput);
+distribMem(input);
